@@ -650,7 +650,11 @@ class InlineParser(object):
         line break; otherwise a soft line break."""
         if (self.peek() == '\n'):
             self.pos += 1
-            last = inlines[len(inlines) - 1]
+            # Avoid IndexError if inlines is empty
+            if inlines:
+                last = inlines[-1]
+            else:
+                last = None
             if last and last.t == "Str" and last.c[-2:] == "  ":
                 last.c = re.sub(r' *$', '', last.c)
                 inlines.append(Block(t="Hardbreak"))
